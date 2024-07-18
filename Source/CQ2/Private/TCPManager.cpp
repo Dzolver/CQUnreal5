@@ -27,7 +27,7 @@ void ATCPManager::BeginPlay()
 void ATCPManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	ReceiveMessageFromServer();
 }
 
 void ATCPManager::ConnectToServer()
@@ -75,20 +75,21 @@ void ATCPManager::SendMessageToServer(const FString& Message, const FString& Pac
 void ATCPManager::ReceiveMessageFromServer()
 {
 	if (!TcpSocket) return;
+
 	TArray<uint8> ReceivedData;
 	uint32 Size;
 	while (TcpSocket->HasPendingData(Size))
 	{
 		ReceivedData.SetNumUninitialized(FMath::Min(Size, 65507u));
+
 		int32 Read = 0;
 		TcpSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
+
+		if (Read > 0)
+		{
+			FString ReceivedString = FString(UTF8_TO_TCHAR(reinterpret_cast<const char*>(ReceivedData.GetData())));
+			UE_LOG(LogTemp, Warning, TEXT("Message received: %s"), *ReceivedString);
+		}
 	}
-	if (ReceivedData.Num() <= 0)
-	{
-		return;
-	}
-	//Create a string from the received data
-	FString ReceivedString = FString(ANSI_TO_TCHAR(reinterpret_cast<const char*>(ReceivedData.GetData())));
-	UE_LOG(LogTemp, Warning, TEXT("Message received: %s"), *ReceivedString);
 }
 
