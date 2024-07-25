@@ -21,6 +21,7 @@ void ATCPManager::BeginPlay()
 	ConnectToServer();
 	SendMessageToServer(TEXT("TestMessage from Client!"),TEXT("t#"));
 	ReceiveMessageFromServer();
+	NPCResponse = "Hello!";
 }
 
 // Called every frame
@@ -89,6 +90,7 @@ void ATCPManager::ReceiveMessageFromServer()
 		{
 			FString ReceivedString = FString(UTF8_TO_TCHAR(reinterpret_cast<const char*>(ReceivedData.GetData())));
 			UE_LOG(LogTemp, Warning, TEXT("Message received: %s"), *ReceivedString);
+			NPCResponse = ReceivedString;
 		}
 	}
 }

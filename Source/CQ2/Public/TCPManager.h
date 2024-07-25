@@ -14,6 +14,8 @@ class CQ2_API ATCPManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATCPManager();
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+	FString NPCResponse;
 
 protected:
 	// Called when the game starts or when spawned
